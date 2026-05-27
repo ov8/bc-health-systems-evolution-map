@@ -1,508 +1,408 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BC Health Systems Evolution Map</title>
-
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+:root {
+  --bg:#fff; --ink:#171447; --muted:#6f6b7d; --line:#e8e5ef; --grid:#f2f0f6; --panel:#fff;
+  --shadow:0 8px 26px rgba(28,22,60,.08); --left:214px; --month:38px; --laneH:86px;
 }
-
-body{
-  background:#f5f7fb;
-  color:#1f2937;
-}
-
-.page{
-  max-width:1800px;
-  margin:0 auto;
-  padding:24px;
-}
-
-h1{
-  font-size:32px;
-  margin-bottom:8px;
-}
-
-.subtitle{
-  color:#6b7280;
-  margin-bottom:22px;
-  line-height:1.5;
-}
-
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-bottom:20px;
-}
-
-.control-box{
-  background:white;
-  border-radius:12px;
-  padding:12px;
-  border:1px solid #dbe2ea;
-}
-
-button{
-  background:#2563eb;
-  color:white;
-  border:none;
-  padding:10px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:600;
-}
-
-button.secondary{
-  background:#e5e7eb;
-  color:#374151;
-}
-
-button:hover{
-  opacity:.92;
-}
-
-input[type="text"]{
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #cfd8e3;
-  min-width:280px;
-}
-
-.legend{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-bottom:18px;
-}
-
-.legend-item{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:white;
-  border:1px solid #dbe2ea;
-  padding:8px 12px;
-  border-radius:999px;
-  font-size:13px;
-}
-
-.legend-dot{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-}
-
-.gov-lane{
-  background:#eef2f7;
-  border:1px solid #d6dde7;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:26px;
-}
-
-.gov-title{
-  font-size:15px;
-  font-weight:700;
-  margin-bottom:14px;
-  color:#374151;
-}
-
-.gov-events{
-  display:flex;
-  gap:14px;
-  overflow-x:auto;
-}
-
-.gov-chip{
-  min-width:180px;
-  background:white;
-  border-left:5px solid #4b5563;
-  border-radius:12px;
-  padding:12px;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-}
-
-.gov-chip .date{
-  font-size:11px;
-  color:#6b7280;
-  font-weight:700;
-}
-
-.gov-chip .title{
-  margin-top:4px;
-  font-weight:700;
-  font-size:13px;
-}
-
-.timeline{
-  overflow-x:auto;
-  padding-bottom:40px;
-}
-
-.timeline-grid{
-  min-width:1800px;
-}
-
-.year-row{
-  display:grid;
-  grid-template-columns:220px repeat(33, 1fr);
-  margin-bottom:8px;
-}
-
-.year-label{
-  position:sticky;
-  left:0;
-  background:#f5f7fb;
-  z-index:5;
-  padding:8px;
-  font-weight:700;
-}
-
-.year-cell{
-  text-align:center;
-  font-size:12px;
-  color:#6b7280;
-  padding:8px 0;
-}
-
-.ha-row{
-  display:grid;
-  grid-template-columns:220px repeat(33, 1fr);
-  min-height:90px;
-  border-bottom:1px solid #e5e7eb;
-  align-items:stretch;
-}
-
-.ha-label{
-  position:sticky;
-  left:0;
-  background:#f5f7fb;
-  padding:14px;
-  font-size:13px;
-  font-weight:700;
-  border-right:1px solid #e5e7eb;
-  z-index:4;
-}
-
-.cell{
-  border-right:1px solid #edf1f5;
-  position:relative;
-  padding:4px;
-}
-
-.event{
-  border-radius:12px;
-  padding:8px;
-  color:white;
-  font-size:11px;
-  margin-bottom:6px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.event:hover{
-  transform:translateY(-2px);
-}
-
-.event-title{
-  font-weight:700;
-  margin-bottom:4px;
-}
-
-.event-date{
-  opacity:.9;
-  font-size:10px;
-}
-
-.event-fac{
-  margin-top:6px;
-  opacity:.9;
-  font-size:10px;
-  line-height:1.4;
-}
-
-.hidden{
-  display:none;
-}
-
-@media(max-width:1200px){
-  .timeline-grid{
-    min-width:1400px;
-  }
-}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
+.wrap{padding:18px 22px 34px;max-width:100%}
+.titlebar{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:10px}
+h1{font-size:24px;margin:0;color:#141044;letter-spacing:-.02em} .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+button,.select,input[type="search"]{border:1px solid #ded9ea;background:#fff;border-radius:999px;padding:7px 11px;font-size:12px;color:#211a50;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+button.active{background:#211a50;color:#fff;border-color:#211a50} select{appearance:none} input[type="search"]{min-width:240px}
+.zoom{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);padding:6px 10px;border:1px solid #eeeaf6;border-radius:999px;background:#fff} .zoom input{width:108px}
+.haToggles,.legend{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px}
+.chip,.legend .item{display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid #eeeaf6;border-radius:999px;font-size:11px;background:#fff;cursor:pointer;user-select:none}
+.chip input{accent-color:#211a50} .sw{width:10px;height:10px;border-radius:50%;display:inline-block}
+.note{font-size:11px;color:var(--muted);margin-bottom:8px}
+.searchResults{font-size:12px;color:var(--muted);margin:6px 0 10px;display:none} .searchResults button{margin:3px;padding:5px 8px;border-radius:8px}
+.timelineShell{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow);overflow:auto;position:relative;max-height:76vh}
+.ht{position:relative;min-width:calc(var(--left) + (35 * 12 * var(--month)));}
+.top{position:sticky;top:0;z-index:8;background:rgba(255,255,255,.95);backdrop-filter:blur(6px);display:grid;grid-template-columns:var(--left) 1fr;border-bottom:1px solid var(--line)}
+.corner{padding:13px 14px;font-weight:800;font-size:13px;border-right:1px solid var(--line)}
+.years{display:grid;grid-template-columns:repeat(35, calc(12 * var(--month)));}
+.year{text-align:center;padding:7px 0 5px;font-size:11px;font-weight:800;border-left:1px solid #d9d5df;background:#f5f4f8}
+.months{grid-column:2;display:grid;grid-template-columns:repeat(420,var(--month));border-top:1px solid #dedbe5}
+.month{font-size:9px;text-align:center;color:#7e798c;padding:4px 0;border-left:1px solid var(--grid);background:#faf9fc}
+.lane{display:grid;grid-template-columns:var(--left) 1fr;min-height:var(--laneH);border-bottom:1px solid var(--line)}
+.lane.isHidden{display:none}
+.laneLabel{position:sticky;left:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 13px;border-right:1px solid var(--line);font-size:12px;font-weight:700;background:var(--laneColorLight)}
+.badge{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;background:var(--laneColor)}
+.laneArea{position:relative;background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px);background-size:var(--month) 100%;min-height:var(--laneH);}
+.event{position:absolute;top:18px;left:var(--x);transform:translateX(-6px);min-width:108px;max-width:152px;border-radius:10px;padding:6px 8px;cursor:pointer;background:var(--cLight);border:1px solid rgba(0,0,0,.04);box-shadow:0 3px 10px rgba(0,0,0,.055);transition:.15s}
+.event:hover{transform:translateX(-6px) translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.event:before{content:'';position:absolute;left:5px;top:-13px;width:11px;height:11px;border-radius:50%;background:var(--c);border:3px solid white;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.event .date{font-size:9px;font-weight:800;color:var(--c);opacity:.78;margin-bottom:1px} .event .sys{font-size:10.5px;font-weight:800;color:var(--c);line-height:1.12} .event .meta{font-size:9px;color:#5b566a;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event.hidden{display:none}
+.verticalView{display:none;max-width:1080px;margin:0 auto;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow);padding:14px 0;position:relative}
+.verticalView:before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--line)}
+.vYear{position:relative;text-align:center;margin:12px 0 8px;z-index:2} .vYear span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:12px;font-weight:800;color:var(--muted)}
+.vRow{position:relative;display:grid;grid-template-columns:1fr 34px 1fr;min-height:34px;margin:5px 0} .vRow.hidden{display:none}
+.vDot{width:12px;height:12px;border-radius:50%;background:var(--c);border:3px solid #fff;margin:10px auto;z-index:2;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.vCard{display:inline-block;background:var(--cLight);border-radius:10px;padding:7px 10px;max-width:365px;cursor:pointer;text-align:left}
+.vLeft{text-align:right;padding-right:10px} .vRight{padding-left:10px} .vDate{font-size:10px;font-weight:800;color:var(--c);opacity:.75} .vSys{font-size:12px;font-weight:800;color:var(--c)} .vMeta{font-size:10px;color:#5b566a;margin-top:3px}
+.modal{position:fixed;inset:0;background:rgba(12,10,32,.42);display:none;align-items:center;justify-content:center;z-index:99;padding:22px} .modal.open{display:flex}
+.box{background:white;border-radius:18px;max-width:760px;width:min(760px,96vw);max-height:82vh;overflow:auto;box-shadow:0 22px 60px rgba(0,0,0,.25)}
+.boxHead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:flex-start} .boxTitle{font-size:18px;font-weight:900;margin:0;color:var(--modalC)} .boxSub{font-size:13px;color:var(--muted);margin-top:4px} .close{font-size:22px;border:none;box-shadow:none;padding:2px 8px}
+.facList{padding:16px 20px 22px;columns:2;column-gap:24px} .facList li{break-inside:avoid;margin:0 0 7px;font-size:13px;color:#302b40;line-height:1.3}
+.facList a{color:var(--modalC);font-weight:700;text-decoration:none}.facList a:hover{text-decoration:underline}
+@media(max-width:900px){:root{--left:170px;--month:36px;--laneH:92px} .titlebar{align-items:flex-start;flex-direction:column} input[type="search"]{min-width:190px} .facList{columns:1}}
 </style>
 </head>
-
 <body>
-
-<div class="page">
-
-<h1>BC Health Systems Evolution Map</h1>
-
-<p class="subtitle">
-Interactive visualization of major clinical systems evolution, interoperability initiatives,
-and digital health modernization activities across British Columbia healthcare organizations.
-</p>
-
-<div class="controls">
-
-<div class="control-box">
-<button onclick="toggleVertical()">Toggle Vertical / Horizontal</button>
+<div class="wrap">
+  <div class="titlebar">
+    <div>
+      <h1>BC Health Systems Evolution Map</h1>
+      <div class="sub">Clinical systems launches and public Acts / law milestones mapped together over time. Click a card to see details.</div>
+    </div>
+    <div class="controls">
+      <button id="hBtn" class="active">Horizontal</button>
+      <button id="vBtn">Vertical</button>
+      <select id="sysFilter" class="select"><option value="all">All systems</option></select>
+      <input id="facilitySearch" type="search" list="facilityOptions" placeholder="Search or filter facilities" />
+      <datalist id="facilityOptions"></datalist>
+      <span class="zoom">Zoom <input id="zoom" type="range" min="30" max="62" value="42" /></span>
+      <button id="resetBtn">Reset</button>
+    </div>
+  </div>
+  <div class="haToggles" id="haToggles"></div>
+  <div class="note" id="note"></div>
+  <div class="searchResults" id="searchResults"></div>
+  <div id="horizontal" class="timelineShell"><div class="ht" id="ht"></div></div>
+  <div id="vertical" class="verticalView"></div>
 </div>
 
-<div class="control-box">
-<input type="text" id="facilitySearch" placeholder="Search facilities..." onkeyup="filterFacilities()">
-</div>
-
-<div class="control-box">
-<button class="secondary" onclick="toggleGov()">Toggle Governance Milestones</button>
-</div>
-
-</div>
-
-<div class="legend" id="legend"></div>
-
-<div id="govLane"></div>
-
-<div class="timeline">
-<div class="timeline-grid" id="timelineGrid"></div>
-</div>
-
+<div class="modal" id="modal">
+  <div class="box" id="modalBox">
+    <div class="boxHead">
+      <div>
+        <h2 class="boxTitle" id="mTitle"></h2>
+        <div class="boxSub" id="mSub"></div>
+      </div>
+      <button type="button" class="close" id="closeBtn" aria-label="Close details">×</button>
+    </div>
+    <ul class="facList" id="mList"></ul>
+  </div>
 </div>
 
 <script>
-
-const YEARS = [];
-for(let y=1993; y<=2025; y++){
-  YEARS.push(y);
-}
-
 const HA = {
-  "VCH": "#c2416c",
-  "PHSA": "#a16207",
-  "FHA": "#2563eb",
-  "IHA": "#0f766e",
-  "NHA": "#9333ea",
-  "VIHA": "#4f46e5",
-  "PHC": "#b91c1c"
+  "Acts / Law": {fill:"#4B5563", light:"#F3F4F6", short:"Acts / Law"},
+  "Fraser Health Authority": {fill:"#185FA5", light:"#ddeaf7", short:"Fraser HA"},
+  "Interior Health Authority": {fill:"#0F6E56", light:"#d3efe6", short:"Interior HA"},
+  "Island Health Authority": {fill:"#533AB7", light:"#e5e0fa", short:"Island HA"},
+  "Northern Health Authority": {fill:"#BA7517", light:"#faeada", short:"Northern HA"},
+  "Provincial Health Services Authority": {fill:"#993C1D", light:"#fae0d8", short:"PHSA"},
+  "Vancouver Coastal Health Authority": {fill:"#993556", light:"#f9dde8", short:"Vancouver Coastal HA"},
+  "Providence Health Authority": {fill:"#DF57AD", light:"#FBE1F2", short:"Providence"}
 };
 
-const GOV_EVENTS = [
-  { title:"BC FOIPPA", date:"Oct 1993", yr:1993 },
-  { title:"BC Hospital Act", date:"1993", yr:1993 },
-  { title:"BC PIPA Act", date:"Jan 2004", yr:2004 },
-  { title:"BC E-Health Act", date:"May 2008", yr:2008 },
-  { title:"Pharma Services Act", date:"May 2012", yr:2012 },
-  { title:"BC GHISA Act", date:"Dec 2013", yr:2013 }
+let EVENTS = [
+  {ha:"Acts / Law", system:"BC Hospital Act", date:"1993", yr:1993, url:"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/96200_01", facs:["BC Laws"]},
+  {ha:"Acts / Law", system:"BC FOIPPA", date:"October 1993", yr:1993, url:"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/96165_00_multi", facs:["BC Laws"]},
+  {ha:"Acts / Law", system:"BC PIPA Act", date:"January 2004", yr:2004, url:"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/03063_01", facs:["BC Laws"]},
+  {ha:"Acts / Law", system:"BC E-Health Act", date:"May 2008", yr:2008, url:"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/08038_01", facs:["BC Laws"]},
+  {ha:"Acts / Law", system:"Pharma Services Act", date:"May 2012", yr:2012, url:"https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/12022_01", facs:["BC Laws"]},
+  {ha:"Acts / Law", system:"BC GHISA", date:"December 2013", yr:2013, url:"https://www.phsa.ca/researcher/data-access-privacy/research-privacy/approvals-agreements", facs:["General Health Information Sharing Agreement context"]},
+
+  {ha:"Vancouver Coastal Health Authority", system:"SoftMed", date:"January 2000", yr:2000, facs:["GF Strong Rehabilitation Centre","Oak Care Centre","Richmond Hospital","Vancouver General Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"SoftMed / M*Modal", date:"January 2000", yr:2000, facs:["Lions Gate Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"SoftMed / M*Modal", date:"October 2005", yr:2005, facs:["Brock Fahrni Pavillion","Holy Family Hospital","Langara Residential Care","St. Vincent's Hospital","Youville Residential Home"]},
+  {ha:"Vancouver Coastal Health Authority", system:"SoftMed / M*Modal / PHC PCIS", date:"October 2005", yr:2005, facs:["Mount Saint Joseph Hospital","St. Paul's Hospital"]},
+  {ha:"Provincial Health Services Authority", system:"CAIS", date:"January 1, 2009", yr:2009, facs:["BC Cancer: Abbotsford Centre, Centre for the North, Fraser Valley Centre, Southern Interior, Vancouver Centre, Vancouver Island Centre"]},
+  {ha:"Provincial Health Services Authority", system:"Legacy Cerner", date:"2010", yr:2010, facs:["BC Children's & Women's Hospital and Health Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"M*Modal", date:"May 8, 2013", yr:2013, facs:["Vancouver General Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"M*Modal", date:"October 16, 2013", yr:2013, facs:["Powell River General Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"M*Modal", date:"January 28, 2014", yr:2014, facs:["Pemberton Health Centre","Squamish General Hospital","Whistler Health Care Centre"]},
+  {ha:"Provincial Health Services Authority", system:"M*Modal", date:"June 9, 2014", yr:2014, facs:["BC Children's & Women's Hospital and Health Centre"]},
+  {ha:"Provincial Health Services Authority", system:"CAIS via M*Modal", date:"September 23, 2014", yr:2014, facs:["BC Cancer: Abbotsford Centre, Centre for the North, Fraser Valley Centre, Southern Interior, Vancouver Centre, Vancouver Island Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"M*Modal", date:"October 21, 2014", yr:2014, facs:["Sechelt Hospital (formerly St Mary's)"]},
+  {ha:"Fraser Health Authority", system:"FHA Meditech", date:"November 2014", yr:2014, facs:["Abbotsford Regional Hospital","Abbotsford/MSA Hospital","Burnaby Hospital","CareLife Fleetwood","Chilliwack General Hospital","Community Programs & Services","Czorny Alzheimers Centre","Delta Hospital","Eagle Ridge Hospital","Fraser Canyon Hospital","Langley Memorial Hospital","Mission Memorial Hospital","Pattison Outpatient Centre","Peach Arch Hospital","Queen's Park Hospital","Ridge Meadows Hospital","Royal Columbian Hospital","Surrey Memorial Hospital","Yale Road Centre"]},
+  {ha:"Provincial Health Services Authority", system:"PPHIS", date:"2016", yr:2016, facs:["BC Centre for Disease Control"]},
+  {ha:"Interior Health Authority", system:"IHA Meditech", date:"June 19, 2016", yr:2016, facs:["Royal Inland Hospital"]},
+  {ha:"Interior Health Authority", system:"IHA Meditech", date:"March 28, 2017", yr:2017, facs:["100 Mile District General Hospital","Arrow Lakes Hospital","Ashcroft Hospital & Community Health Care Centre","Barriere Health Centre","Boundary District Hospital","Cariboo Memorial Hospital","Castlegar & District Community Health Centre","Chase Primary Health Care Clinic","Creston Valley Hospital & Health Centre","Dr. Helmcken Memorial Hospital","East Kootenay Regional Hospital","Elk Valley Hospital","Elkford Health Centre","Golden & District Hospital","Invermere & District Hospital","Kelowna General Hospital","Kootenay Boundary Regional Hospital","Kootenay Lake Hospital","Lillooet Hospital & Health Centre","Logan Lake Primary Health Centre","Nicola Valley Hospital & Health Centre","Penticton Regional Hospital","Princeton General Hospital","Queen Victoria Hospital","Shuswap Lake General Hospital","Slocan Community Health Centre","South Okanagan General Hospital","South Similkameen Health Centre","Sparwood Primary Health Care Centre","St. Bartholomew's Health Centre","Vernon Jubilee Hospital","Victorian Community Health Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"MUSE", date:"April 28, 2018", yr:2018, facs:["Lions Gate Hospital","Squamish General Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"April 28, 2018", yr:2018, facs:["Lions Gate Hospital","Pemberton Health Centre","Squamish General Hospital"]},
+  {ha:"Northern Health Authority", system:"NHA Cerner", date:"June 6, 2018", yr:2018, facs:["Atlin Health Centre","Bulkley Valley District Hospital","Chetwynd General Hospital","Dawson Creek and District Hospital","Fort Nelson General Hospital","Fort St. John Hospital and Peace Villa","Fraser Lake Community Health Centre","GR Baker Memorial Hospital","Granisle Health Centre","Haida Gwaii Hospital and Health Centre","Houston Health Centre","Hudson's Hope Health Centre","Kitimat General Hospital","Lakes District Hospital and Health Centre","Mackenzie and District Hospital and Health Centre","McBride and District Hospital","Mills Memorial Hospital","Northern Haida Gwaii Hospital","Prince Rupert Regional Hospital","Stewart Health Centre","Stikine Health Centre","Stuart Lake Hospital","Tumbler Ridge Health Centre","University Hospital of Northern British Columbia","Valemount Health Centre","Vhf-St. John Hospital","Wrinch Memorial Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"September 27, 2018", yr:2018, facs:["Whistler Health Care Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"November 2019", yr:2019, facs:["St. Paul's Hospital"]},
+
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"April 15, 2020", yr:2020, facs:["Aberdeen","Campbell River Hospital","Chemainus Health Centre","Comox Valley Hospital","Cormorant Island Health Centre","Cowichan District Hospital","Cumberland Lodge","Dufferin Place","Eagle Park Health","Eagle Ridge Manor","Echo Village","Glengarry","Gold River Health Centre","Gorge Road Health Centre","Lady Minto Gulf Islands Hospital","Ladysmith Community Health Centre","Mayne Island Health Care Centre","Mt. Tolmie","Nanaimo Regional General Hospital","Oak Bay Lodge","Oceanside Health Centre","Port Alice Health Centre","Port Hardy Hospital","Port McNeill Hospital","Priory","Rainbow Gardens","Royal Jubilee Hospital","Saanich Peninsula Hospital","St. Joseph's General Hospital","The Summit at Quadra Village","Tofino General Hospital","Trillium Lodge","Vancouver Island Cancer Clinic","Victoria General Hospital","View Royal Surgical Centre","West Coast General Hospital","West Shore Centre","Westhaven","Yucalta Lodge"]},
+  {ha:"Vancouver Coastal Health Authority", system:"Syngo", date:"May 10, 2020", yr:2020, facs:["Powell River General Hospital","Richmond Hospital","UBC Hospital"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"June 2020", yr:2020, facs:["Community Program - Geriatric Psychiatry LTC","Victoria Health Unit"]},
+  {ha:"Provincial Health Services Authority", system:"VPP Cerner", date:"September 13, 2020", yr:2020, facs:["Heartwood Centre for Women"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VCHA iClinic", date:"October 2020", yr:2020, facs:["Vancouver General Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"October 2020", yr:2020, facs:["Northeast Urgent Care Centre (UPCC)"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"November 2020", yr:2020, facs:["Fairfield Health Centre"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"January 2021", yr:2021, facs:["Youth Wellness Centre"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"March 2021", yr:2021, facs:["Alert Bay Community Hall"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"April 2021", yr:2021, facs:["Richmond Urgent Care Centre (UPCC)"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"August 2021", yr:2021, facs:["Mental Health & Addictions Services - Acute Care (SI)"]},
+  {ha:"Provincial Health Services Authority", system:"VPP Cerner", date:"October 12, 2021", yr:2021, facs:["Red Fish Healing Centre"]},
+  {ha:"Provincial Health Services Authority", system:"VPP Cerner", date:"February 26, 2022", yr:2022, facs:["BC Children's & Women's Hospital and Health Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"May 2022", yr:2022, facs:["Sumac Place","Totem Lodge","UBC Hospital"]},
+  {ha:"Provincial Health Services Authority", system:"Syngo", date:"May 10, 2022", yr:2022, facs:["BC Children's & Women's Hospital and Health Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"Syngo", date:"May 10, 2022", yr:2022, facs:["Hilltop House","Lions Gate Evergreen House","Lions Gate Hospital","Mount Saint Joseph Hospital","Pemberton Health Centre","Sechelt Hospital (formerly St Mary's)","Squamish General Hospital","St. Paul's Hospital","Vancouver General Hospital","Whistler Health Care Centre"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"May 14, 2022", yr:2022, facs:["Sechelt Hospital (formerly St Mary's)"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"October 2022", yr:2022, facs:["Community Program - Eating Disorders","MHSU Community Services - Eating Disorders"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"October 28, 2022", yr:2022, facs:["UBC Hospital"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"March 2023", yr:2023, facs:["Camosun College Ambulatory Clinics"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"May 2023", yr:2023, facs:["Esquimalt Military Base"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"May 28, 2023", yr:2023, facs:["May's Place Hospice"]},
+  {ha:"Provincial Health Services Authority", system:"VPP Cerner", date:"June 26, 2023", yr:2023, facs:["BC Cancer: Prince George"]},
+  {ha:"Fraser Health Authority", system:"PRISM-BC", date:"July 26, 2023", yr:2023, facs:["Abbotsford Regional Hospital","Jim Pattison Outpatient Centre"]},
+  {ha:"Interior Health Authority", system:"PRISM-BC", date:"July 26, 2023", yr:2023, facs:["Kelowna General Hospital","Kootenay Boundary Regional Hospital","Penticton Regional Hospital","Royal Inland Hospital"]},
+  {ha:"Island Health Authority", system:"PRISM-BC", date:"July 26, 2023", yr:2023, facs:["Nanaimo Regional General Hospital","Royal Jubilee Hospital"]},
+  {ha:"Northern Health Authority", system:"PRISM-BC", date:"July 26, 2023", yr:2023, facs:["University Hospital of Northern British Columbia"]},
+  {ha:"Vancouver Coastal Health Authority", system:"PRISM-BC", date:"July 26, 2023", yr:2023, facs:["Lions Gate Hospital","Richmond Hospital"]},
+  {ha:"Provincial Health Services Authority", system:"VPP Cerner", date:"October 14, 2023", yr:2023, facs:["Forensic Psychiatric Hospital"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"October 27, 2023", yr:2023, facs:["Villa Cathay Care Home"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VPP Cerner", date:"November 14, 2023", yr:2023, facs:["North Vancouver Urgent and Primary Care Centre (UPCC)"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"February 2025", yr:2025, facs:["Brentwood House - Central Saanich LTC","Sluggett House - Central Saanich"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"March 2025", yr:2025, facs:["Port Alberni Community Health Centre"]},
+  {ha:"Island Health Authority", system:"VIHA-Cerner", date:"April 2025", yr:2025, facs:["Ty Watson Hospice House"]},
+  {ha:"Interior Health Authority", system:"IHA Meditech", date:"May 1, 2025", yr:2025, facs:["Kaslo Primary Health Centre","North Shore Primary Care Centre","Northills Primary Care Clinic","Outreach Urban Health Centre","Rutland Health Centre","Sorrento & Area Community Health Centre","West Kelowna Health Centre"]},
+  {ha:"Interior Health Authority", system:"IHA iClinic", date:"May 1, 2025", yr:2025, facs:["Central Okanagan Association for Cardiac Health","Kamloops Primary Care Clinic","Kelowna Cardiology Associates","Kelowna General Hospital"]},
+  {ha:"Interior Health Authority", system:"IHA Meditech", date:"August 12, 2025", yr:2025, facs:["Nelson Community Health Services Centre"]},
+  {ha:"Fraser Health Authority", system:"FHA Meditech", date:"October 2025", yr:2025, facs:["Chénchenstway"]},
+  {ha:"Interior Health Authority", system:"IHA Meditech", date:"October 2025", yr:2025, facs:["Clinton Health & Wellness Centre","East Shore Community Health Centre","Edgewood Health Centre","Enderby Community Health Centre","King Street Centre","Nelson Fairview Gardens","Okanagan Indian Band (OKIB) Primary Care Clinic","Revelstoke Diabetes Clinic","Rock Creek Health Centre","Salmo Health and Wellness Centre","Urgent Primary Care Centre - Ashcroft","Urgent Primary Care Centre - Castlegar","Urgent Primary Care Centre - Kelowna","Urgent Primary Care Centre - Penticton","Urgent Primary Care Centre - Rutland","Urgent Primary Care Centre - Vernon","Urgent Primary Care Centre - West Kelowna"]},
+  {ha:"Vancouver Coastal Health Authority", system:"VCHA iClinic", date:"October 2025", yr:2025, facs:["Pacific Geriatricians Group Inc."]}
 ];
 
-const EVENTS = [
+const ORDER = ["Acts / Law","Fraser Health Authority","Interior Health Authority","Northern Health Authority","Vancouver Coastal Health Authority","Providence Health Authority","Island Health Authority","Provincial Health Services Authority"];
+const PHC_FACILITIES = new Set(["Brock Fahrni Pavillion","Holy Family Hospital","Mount Saint Joseph Hospital","St. Paul's Hospital","St. Vincent's Hospital","Youville Residential Home"]);
 
-{
-ha:"VCH",
-yr:2000,
-date:"Jan 2000",
-system:"SoftMed",
-facilities:["VGH","Richmond Hospital","GF Strong"]
-},
-
-{
-ha:"PHSA",
-yr:2009,
-date:"Jan 2009",
-system:"CAIS",
-facilities:["BC Cancer Centres"]
-},
-
-{
-ha:"FHA",
-yr:2014,
-date:"Nov 2014",
-system:"FHA Meditech",
-facilities:["Surrey Memorial","Burnaby Hospital","RCH"]
-},
-
-{
-ha:"IHA",
-yr:2016,
-date:"Jun 2016",
-system:"IHA Meditech",
-facilities:["Royal Inland Hospital"]
-},
-
-{
-ha:"NHA",
-yr:2018,
-date:"Jun 2018",
-system:"NHA Cerner",
-facilities:["UHNBC","Prince Rupert Regional"]
-},
-
-{
-ha:"VIHA",
-yr:2020,
-date:"Apr 2020",
-system:"VIHA Cerner",
-facilities:["RJH","NRGH","Victoria General"]
-},
-
-{
-ha:"PHSA",
-yr:2023,
-date:"Jun 2023",
-system:"VPP Cerner",
-facilities:["BC Cancer Prince George"]
-}
-
-];
-
-const legend = document.getElementById('legend');
-
-Object.entries(HA).forEach(([k,v]) => {
-  legend.innerHTML += `
-    <div class="legend-item">
-      <div class="legend-dot" style="background:${v}"></div>
-      ${k}
-    </div>
-  `;
-});
-
-const govLane = document.getElementById('govLane');
-
-govLane.innerHTML = `
-<div class="gov-lane" id="govSection">
-  <div class="gov-title">Governance / Legislative Milestones</div>
-  <div class="gov-events">
-    ${GOV_EVENTS.map(g => `
-      <div class="gov-chip">
-        <div class="date">${g.date}</div>
-        <div class="title">${g.title}</div>
-      </div>
-    `).join('')}
-  </div>
-</div>
-`;
-
-const grid = document.getElementById('timelineGrid');
-
-function buildTimeline(){
-
-grid.innerHTML = '';
-
-const yearRow = document.createElement('div');
-yearRow.className = 'year-row';
-
-yearRow.innerHTML = `
-<div class="year-label">Health Authority</div>
-`;
-
-YEARS.forEach(y => {
-  yearRow.innerHTML += `
-    <div class="year-cell">${y}</div>
-  `;
-});
-
-grid.appendChild(yearRow);
-
-Object.keys(HA).forEach(ha => {
-
-  const row = document.createElement('div');
-  row.className = 'ha-row';
-
-  row.innerHTML = `
-    <div class="ha-label">${ha}</div>
-  `;
-
-  YEARS.forEach(year => {
-
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-
-    EVENTS
-      .filter(e => e.ha === ha && e.yr === year)
-      .forEach(ev => {
-
-        const eventDiv = document.createElement('div');
-        eventDiv.className = 'event';
-        eventDiv.style.background = HA[ha];
-
-        eventDiv.innerHTML = `
-          <div class="event-title">${ev.system}</div>
-          <div class="event-date">${ev.date}</div>
-          <div class="event-fac">
-            ${ev.facilities.join('<br>')}
-          </div>
-        `;
-
-        cell.appendChild(eventDiv);
-
-      });
-
-    row.appendChild(cell);
-
+function splitProvidence(events){
+  const out=[];
+  events.forEach(ev=>{
+    if(ev.ha!=="Vancouver Coastal Health Authority") { out.push(ev); return; }
+    const phc=ev.facs.filter(f=>PHC_FACILITIES.has(f));
+    const other=ev.facs.filter(f=>!PHC_FACILITIES.has(f));
+    if(phc.length && other.length){ out.push({...ev, facs:other}); out.push({...ev, ha:"Providence Health Authority", facs:phc}); }
+    else if(phc.length){ out.push({...ev, ha:"Providence Health Authority", facs:phc}); }
+    else out.push(ev);
   });
-
-  grid.appendChild(row);
-
-});
-
+  return out;
 }
 
-buildTimeline();
+EVENTS = splitProvidence(EVENTS);
 
-function filterFacilities(){
+const ABBR = {
+  "Acts / Law":"LAW",
+  "Fraser Health Authority":"FHA",
+  "Interior Health Authority":"IHA",
+  "Northern Health Authority":"NHA",
+  "Vancouver Coastal Health Authority":"VCH",
+  "Providence Health Authority":"PHC",
+  "Island Health Authority":"VIHA",
+  "Provincial Health Services Authority":"PHSA"
+};
 
-const q = document
-  .getElementById('facilitySearch')
-  .value
-  .toLowerCase();
+const START=1993, END=2027;
 
-document.querySelectorAll('.event').forEach(ev => {
+function parseMonth(ev){
+  let d=ev.date;
+  if(/^\d{4}$/.test(d)) return {y:+d,m:0};
+  const dt=new Date(d.replace(/(\d+)(st|nd|rd|th)/g,'$1'));
+  if(!isNaN(dt)) return {y:dt.getFullYear(),m:dt.getMonth()};
+  const m=d.match(/([A-Za-z]+)\s+(\d{4})/);
+  if(m) return {y:+m[2],m:new Date(m[1]+' 1, 2000').getMonth()};
+  return {y:ev.yr,m:0};
+}
 
-  const txt = ev.innerText.toLowerCase();
+function monthIndex(ev){const p=parseMonth(ev);return (p.y-START)*12+p.m}
+function xpos(ev){return monthIndex(ev)*Number(getComputedStyle(document.documentElement).getPropertyValue('--month').replace('px',''))+32}
+function light(ha){return (HA[ha]||{light:'#eee'}).light}
+function fill(ha){return (HA[ha]||{fill:'#777'}).fill}
+function activeHAs(){return [...document.querySelectorAll('.haCheck:checked')].map(x=>x.value)}
+function facLabel(f){return typeof f === 'string' ? f : f.name}
+function facUrl(f){return typeof f === 'string' ? null : f.url}
+function facilityText(ev){return ev.facs.map(facLabel).join(' ').toLowerCase()}
 
-  if(txt.includes(q)){
-    ev.style.display = 'block';
+function eventPasses(ev){
+  const systems=sysFilter.value;
+  const q=facilitySearch.value.trim().toLowerCase();
+  return activeHAs().includes(ev.ha) && (systems==='all'||ev.system===systems) && (!q || facilityText(ev).includes(q));
+}
+
+function applyFilters(){
+  document.querySelectorAll('[data-event]').forEach(el=>{
+    const ev=EVENTS[+el.dataset.event];
+    el.classList.toggle('hidden',!eventPasses(ev));
+  });
+  document.querySelectorAll('.lane').forEach(l=>l.classList.toggle('isHidden',!activeHAs().includes(l.dataset.ha)));
+
+  const q=facilitySearch.value.trim().toLowerCase();
+  if(q){
+    const matches=EVENTS.map((e,i)=>[e,i]).filter(([e])=>eventPasses(e));
+    searchResults.style.display='block';
+    searchResults.innerHTML=`Showing ${matches.length} event(s) matching “${facilitySearch.value}”. `+
+      matches.slice(0,8).map(([e,i])=>`<button onclick="openModal(EVENTS[${i}])">${e.date} · ${ABBR[e.ha]} · ${e.system}</button>`).join('');
   } else {
-    ev.style.display = 'none';
+    searchResults.style.display='none';
   }
-
-});
-
+  updateNote();
 }
 
-function toggleGov(){
-
-document
-  .getElementById('govSection')
-  .classList
-  .toggle('hidden');
-
+function updateNote(){
+  const visible=EVENTS.filter(eventPasses);
+  const facilityCount=visible.filter(e=>e.ha!=="Acts / Law").reduce((a,e)=>a+e.facs.length,0);
+  note.textContent=`${facilityCount} facilities · ${visible.length} grouped events visible · ${activeHAs().filter(h=>h!=="Acts / Law").length} health authorities shown`;
 }
 
-let vertical = false;
-
-function toggleVertical(){
-
-vertical = !vertical;
-
-if(vertical){
-  document.querySelector('.timeline-grid').style.minWidth = '100%';
-} else {
-  document.querySelector('.timeline-grid').style.minWidth = '1800px';
+function openModal(ev){
+  document.documentElement.style.setProperty('--modalC',fill(ev.ha));
+  if (ev.url) {
+    mTitle.innerHTML = `<a href="${ev.url}" target="_blank" rel="noopener" style="color:var(--modalC);text-decoration:none">${ev.system} · ${ev.date} ↗</a>`;
+  } else {
+    mTitle.textContent = `${ev.system} · ${ev.date}`;
+  }
+  const countLabel = ev.ha==="Acts / Law" ? "public source" : `facilit${ev.facs.length===1?'y':'ies'}`;
+  mSub.textContent = `${ev.ha} · ${ev.facs.length} ${countLabel}`;
+  mList.innerHTML=ev.facs.map(f=>{
+    const label=facLabel(f);
+    const url=facUrl(f);
+    return `<li>${url ? `<a href="${url}" target="_blank" rel="noopener">${label}</a>` : label}</li>`;
+  }).join('');
+  modal.classList.add('open');
 }
 
+function buildControls(){
+  haToggles.innerHTML=ORDER.map(h=>`<label class="chip"><input class="haCheck" type="checkbox" value="${h}" checked><span class="sw" style="background:${fill(h)}"></span>${HA[h].short}</label>`).join('');
+  const systems=[...new Set(EVENTS.map(e=>e.system))].sort();
+  sysFilter.innerHTML+=systems.map(s=>`<option value="${s}">${s}</option>`).join('');
+  const facs=[...new Set(EVENTS.flatMap(e=>e.facs.map(facLabel)))].sort();
+  facilityOptions.innerHTML=facs.map(f=>`<option value="${f}"></option>`).join('');
+  document.querySelectorAll('.haCheck').forEach(c=>c.onchange=applyFilters);
 }
 
+function buildHorizontal(){
+  const root=document.getElementById('ht');
+  let top=`<div class="top"><div class="corner">Health Authority</div><div><div class="years">`;
+  for(let y=START;y<=END;y++) top+=`<div class="year">${y}</div>`;
+  top+=`</div><div class="months">`;
+  const mn=['J','F','M','A','M','J','J','A','S','O','N','D'];
+  for(let y=START;y<=END;y++) for(let i=0;i<12;i++) top+=`<div class="month">${mn[i]}</div>`;
+  top+=`</div></div></div>`;
+  root.innerHTML=top;
+
+  ORDER.forEach(ha=>{
+    const evs=EVENTS.map((e,i)=>[e,i]).filter(([e])=>e.ha===ha);
+    if(!evs.length) return;
+    const lane=document.createElement('div');
+    lane.className='lane';
+    lane.dataset.ha=ha;
+    lane.style.setProperty('--laneColor',fill(ha));
+    lane.style.setProperty('--laneColorLight',light(ha));
+    lane.innerHTML=`<div class="laneLabel"><span class="badge">${ABBR[ha]||''}</span><span>${HA[ha].short||ha}</span></div><div class="laneArea"></div>`;
+    const area=lane.querySelector('.laneArea');
+    const used={};
+
+    evs.sort((a,b)=>monthIndex(a[0])-monthIndex(b[0])).forEach(([ev,i])=>{
+      const bucket=monthIndex(ev);
+      used[bucket]=(used[bucket]||0)+1;
+      const row=(used[bucket]-1)%3;
+      const card=document.createElement('div');
+      card.className='event';
+      card.dataset.event=i;
+      card.style.setProperty('--x',xpos(ev)+'px');
+      card.style.setProperty('--c',fill(ha));
+      card.style.setProperty('--cLight',light(ha));
+      card.style.top=(18+row*24)+'px';
+      const meta = ev.ha==="Acts / Law" ? "public source" : `${ev.facs.length} facilities`;
+      card.innerHTML=`<div class="date">${ev.date}</div><div class="sys">${ev.system}</div><div class="meta">${meta}</div>`;
+      card.onclick=()=>openModal(ev);
+      area.appendChild(card);
+    });
+
+    root.appendChild(lane);
+  });
+}
+
+function buildVertical(){
+  const root=document.getElementById('vertical');
+  root.innerHTML='';
+  let lastYear=null;
+
+  EVENTS.map((e,i)=>[e,i]).sort((a,b)=>monthIndex(a[0])-monthIndex(b[0]) || ORDER.indexOf(a[0].ha)-ORDER.indexOf(b[0].ha)).forEach(([ev,i],idx)=>{
+    const p=parseMonth(ev);
+    if(p.y!==lastYear){
+      lastYear=p.y;
+      const y=document.createElement('div');
+      y.className='vYear';
+      y.innerHTML=`<span>${p.y}</span>`;
+      root.appendChild(y);
+    }
+    const row=document.createElement('div');
+    row.className='vRow';
+    row.dataset.event=i;
+    row.style.setProperty('--c',fill(ev.ha));
+    row.style.setProperty('--cLight',light(ev.ha));
+    const side=idx%2===0?'left':'right';
+    const meta = ev.ha==="Acts / Law" ? "public source" : `${ev.facs.length} facilities`;
+    const card=`<div class="vCard"><div class="vDate">${ev.date} · ${ABBR[ev.ha]}</div><div class="vSys">${ev.system}</div><div class="vMeta">${meta}</div></div>`;
+    row.innerHTML=side==='left'?`<div class="vLeft">${card}</div><div class="vDot"></div><div></div>`:`<div></div><div class="vDot"></div><div class="vRight">${card}</div>`;
+    row.onclick=()=>openModal(ev);
+    root.appendChild(row);
+  });
+}
+
+function rebuildPositions(){
+  document.querySelectorAll('.event').forEach(el=>{
+    const ev=EVENTS[+el.dataset.event];
+    el.style.setProperty('--x',xpos(ev)+'px');
+  });
+}
+
+buildControls();
+buildHorizontal();
+buildVertical();
+applyFilters();
+
+sysFilter.onchange=applyFilters;
+facilitySearch.oninput=applyFilters;
+
+zoom.oninput=()=>{
+  document.documentElement.style.setProperty('--month',zoom.value+'px');
+  rebuildPositions();
+};
+
+resetBtn.onclick=()=>{
+  sysFilter.value='all';
+  facilitySearch.value='';
+  document.querySelectorAll('.haCheck').forEach(c=>c.checked=true);
+  zoom.value=42;
+  document.documentElement.style.setProperty('--month','42px');
+  rebuildPositions();
+  applyFilters();
+};
+
+hBtn.onclick=()=>{
+  hBtn.classList.add('active');
+  vBtn.classList.remove('active');
+  horizontal.style.display='block';
+  vertical.style.display='none';
+};
+
+vBtn.onclick=()=>{
+  vBtn.classList.add('active');
+  hBtn.classList.remove('active');
+  horizontal.style.display='none';
+  vertical.style.display='block';
+};
+
+function closeModal(){ modal.classList.remove('open'); }
+closeBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+modalBox.addEventListener('click', e=>e.stopPropagation());
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 </script>
-
 </body>
 </html>
