@@ -376,6 +376,8 @@ function openModal(ev){
   modal.classList.add('open');
 }
 
+  function sendToMap(ev){  if(!ev.map) return;  const payload = {    type: "highlight",    nodes: ev.map.nodes || [],    edges: ev.map.edges || [],    layers: ev.map.layers || []  };  // Send message to other window/tab  window.postMessage(payload, "*");}
+
 function buildControls(){
   haToggles.innerHTML=ORDER.map(h=>`<label class="chip"><input class="haCheck" type="checkbox" value="${h}" checked><span class="sw" style="background:${fill(h)}"></span>${HA[h].short}</label>`).join('');
   const systems=[...new Set(EVENTS.map(e=>e.system))].sort();
@@ -420,7 +422,10 @@ function buildHorizontal(){
       card.style.top=(18+row*24)+'px';
       const meta = ev.ha==="Acts / Law" ? "public source" : `${ev.facs.length} facilities`;
       card.innerHTML=`<div class="date">${ev.date}</div><div class="sys">${ev.system}</div><div class="meta">${meta}</div>`;
-      card.onclick=()=>openModal(ev);
+      card.onclick=()=>{
+  openModal(ev);
+  sendToMap(ev);
+};
       area.appendChild(card);
     });
 
