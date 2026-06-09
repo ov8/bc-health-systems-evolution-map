@@ -376,7 +376,20 @@ function openModal(ev){
   modal.classList.add('open');
 }
 
-  function sendToMap(ev){  if(!ev.map) return;  const payload = {    type: "highlight",    nodes: ev.map.nodes || [],    edges: ev.map.edges || [],    layers: ev.map.layers || []  };  // Send message to other window/tab  window.postMessage(payload, "*");}
+  function sendToMap(ev){
+  if(!ev.map) return;
+
+  const payload = {
+    nodes: ev.map.nodes || [],
+    edges: ev.map.edges || [],
+    layers: ev.map.layers || [],
+    timestamp: Date.now()
+  };
+
+  // Save to localStorage (this triggers event in other tab)
+  localStorage.setItem("cc-map-highlight", JSON.stringify(payload));
+}
+``
 
 function buildControls(){
   haToggles.innerHTML=ORDER.map(h=>`<label class="chip"><input class="haCheck" type="checkbox" value="${h}" checked><span class="sw" style="background:${fill(h)}"></span>${HA[h].short}</label>`).join('');
