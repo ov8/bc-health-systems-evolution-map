@@ -226,7 +226,7 @@ let EVENTS = [
   {ha:"Provincial Health Services Authority", system:"M*Modal", date:"June 9, 2014", yr:2014, facs:["BC Children's & Women's Hospital and Health Centre"]},
   {ha:"Provincial Health Services Authority", system:"CAIS via M*Modal", date:"September 23, 2014", yr:2014, facs:["BC Cancer: Abbotsford Centre, Centre for the North, Fraser Valley Centre, Southern Interior, Vancouver Centre, Vancouver Island Centre"]},
   {ha:"Vancouver Coastal Health Authority", system:"M*Modal", date:"October 21, 2014", yr:2014, facs:["Sechelt Hospital (formerly St Mary's)"]},
-  {  ha:"Fraser Health Authority",  system:"FHA Meditech",  date:"November 2014",  yr:2014,  facs:[ ... ],  map: {    nodes: ["fha_medi"],    edges: ["e_fha_medi_b","e_fha_b_dib"],    layers: ["docs","enc"]  }},
+  {ha:"Fraser Health Authority", system:"FHA Meditech", date:"November 2014", yr:2014, facs:["Abbotsford Regional Hospital","Abbotsford/MSA Hospital","Burnaby Hospital","CareLife Fleetwood","Chilliwack General Hospital","Community Programs & Services","Czorny Alzheimers Centre","Delta Hospital","Eagle Ridge Hospital","Fraser Canyon Hospital","Langley Memorial Hospital","Mission Memorial Hospital","Pattison Outpatient Centre","Peach Arch Hospital","Queen's Park Hospital","Ridge Meadows Hospital","Royal Columbian Hospital","Surrey Memorial Hospital","Yale Road Centre"]},
   {ha:"Provincial Health Services Authority", system:"PPHIS", date:"2016", yr:2016, facs:["BC Centre for Disease Control"]},
   {ha:"Interior Health Authority", system:"IHA Meditech", date:"June 19, 2016", yr:2016, facs:["Royal Inland Hospital"]},
   {ha:"Interior Health Authority", system:"IHA Meditech", date:"March 28, 2017", yr:2017, facs:["100 Mile District General Hospital","Arrow Lakes Hospital","Ashcroft Hospital & Community Health Care Centre","Barriere Health Centre","Boundary District Hospital","Cariboo Memorial Hospital","Castlegar & District Community Health Centre","Chase Primary Health Care Clinic","Creston Valley Hospital & Health Centre","Dr. Helmcken Memorial Hospital","East Kootenay Regional Hospital","Elk Valley Hospital","Elkford Health Centre","Golden & District Hospital","Invermere & District Hospital","Kelowna General Hospital","Kootenay Boundary Regional Hospital","Kootenay Lake Hospital","Lillooet Hospital & Health Centre","Logan Lake Primary Health Centre","Nicola Valley Hospital & Health Centre","Penticton Regional Hospital","Princeton General Hospital","Queen Victoria Hospital","Shuswap Lake General Hospital","Slocan Community Health Centre","South Okanagan General Hospital","South Similkameen Health Centre","Sparwood Primary Health Care Centre","St. Bartholomew's Health Centre","Vernon Jubilee Hospital","Victorian Community Health Centre"]},
@@ -376,21 +376,6 @@ function openModal(ev){
   modal.classList.add('open');
 }
 
-  function sendToMap(ev){
-  if(!ev.map) return;
-
-  const payload = {
-    nodes: ev.map.nodes || [],
-    edges: ev.map.edges || [],
-    layers: ev.map.layers || [],
-    timestamp: Date.now()
-  };
-
-  // Save to localStorage (this triggers event in other tab)
-  localStorage.setItem("cc-map-highlight", JSON.stringify(payload));
-}
-``
-
 function buildControls(){
   haToggles.innerHTML=ORDER.map(h=>`<label class="chip"><input class="haCheck" type="checkbox" value="${h}" checked><span class="sw" style="background:${fill(h)}"></span>${HA[h].short}</label>`).join('');
   const systems=[...new Set(EVENTS.map(e=>e.system))].sort();
@@ -435,10 +420,7 @@ function buildHorizontal(){
       card.style.top=(18+row*24)+'px';
       const meta = ev.ha==="Acts / Law" ? "public source" : `${ev.facs.length} facilities`;
       card.innerHTML=`<div class="date">${ev.date}</div><div class="sys">${ev.system}</div><div class="meta">${meta}</div>`;
-      card.onclick=()=>{
-  openModal(ev);
-  sendToMap(ev);
-};
+      card.onclick=()=>openModal(ev);
       area.appendChild(card);
     });
 
